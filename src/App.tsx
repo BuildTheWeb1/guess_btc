@@ -1,14 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { fetchBTCPrice } from "./api";
 
 function App() {
+  const [currentBtcPrice, setCurrentBtcPrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const price = await fetchBTCPrice();
+      setCurrentBtcPrice(price);
+    };
+    fetchPrice();
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          The current <code>BTC price is: </code>
+          {currentBtcPrice}€
         </p>
         <a
           className="App-link"
