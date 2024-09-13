@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
 import { fetchBTCPrice } from "./api";
+import { Box, Typography } from "@mui/material";
 
 function App() {
   const [currentBtcPrice, setCurrentBtcPrice] = useState<number | null>(null);
@@ -15,23 +14,13 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          The current <code>BTC price is: </code>
-          {currentBtcPrice}€
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box m={4}>
+      <Typography variant="h1" gutterBottom>
+        BTC Guessing Game
+      </Typography>
+      The current <code>BTC price is: </code>
+      {currentBtcPrice}€
+    </Box>
   );
 }
 
