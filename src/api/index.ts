@@ -1,14 +1,14 @@
 // src/api.ts
 export interface BtcPriceResponse {
   bitcoin: {
-    eur: number;
+    usd: number;
   };
 }
 
 export const fetchBTCPrice = async (): Promise<number> => {
   const response = await fetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur"
+    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
   );
   const data: BtcPriceResponse = await response.json();
-  return data.bitcoin.eur;
+  return data.bitcoin.usd;
 };
