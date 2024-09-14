@@ -1,13 +1,9 @@
-import React, { useState } from "react";
-import { Button, IconButton } from "@mui/material";
-import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-
-enum GuessType {
-  UP = "up",
-  DOWN = "down",
-  NEUTRAL = "",
-}
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import { Box, Fab, IconButton } from "@mui/material";
+import { useState } from "react";
+import { GuessType } from "../../types";
 
 interface GuessFormProps {
   onSubmitGuess: (guess: GuessType) => void;
@@ -25,25 +21,28 @@ const GuessForm: React.FC<GuessFormProps> = ({ onSubmitGuess }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <IconButton
-        aria-label="price going up"
-        color="success"
-        onClick={() => setGuess(GuessType.UP)}
-      >
-        <KeyboardDoubleArrowUpIcon />
-      </IconButton>
+      <Box>
+        <IconButton
+          aria-label="price going up"
+          color="secondary"
+          onClick={() => setGuess(GuessType.UP)}
+        >
+          <KeyboardDoubleArrowUpIcon fontSize="large" />
+        </IconButton>
 
-      <IconButton
-        aria-label="price going down"
-        color="error"
-        onClick={() => setGuess(GuessType.DOWN)}
-      >
-        <KeyboardDoubleArrowDownIcon />
-      </IconButton>
+        <IconButton
+          aria-label="price going down"
+          color="secondary"
+          onClick={() => setGuess(GuessType.DOWN)}
+        >
+          <KeyboardDoubleArrowDownIcon fontSize="large" />
+        </IconButton>
+      </Box>
 
-      <Button variant="outlined" size="large" type="submit" disabled={!guess}>
+      <Fab variant="extended" color="secondary" type="submit" disabled={!guess}>
         Submit Guess
-      </Button>
+        <KeyboardDoubleArrowRightIcon />
+      </Fab>
     </form>
   );
 };
