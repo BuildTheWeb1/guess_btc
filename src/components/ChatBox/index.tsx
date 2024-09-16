@@ -12,45 +12,41 @@ const ChatBox: React.FC<ChatBoxProps> = ({ guess, guessResult }) => {
     message: string;
     alertType: AlertColor;
   } | null => {
-    switch (guessResult) {
-      case GuessResultType.CORRECT:
-        return {
-          message: "Great choice! Score increased.",
-          alertType: "success",
-        };
-      case GuessResultType.INCORRECT:
-        return {
-          message: "Nope! Guess again. Score decreased.",
-          alertType: "error",
-        };
-      case GuessResultType.NEUTRAL:
-        return {
-          message: "Price did not change. Score remains the same.",
-          alertType: "warning",
-        };
-      default:
-        return null;
+    if (guessResult === GuessResultType.CORRECT) {
+      return {
+        message: "Great choice! Score increased.",
+        alertType: "success",
+      };
+    } else if (guessResult === GuessResultType.INCORRECT) {
+      return {
+        message: "Wrong guess! Score decreased.",
+        alertType: "error",
+      };
     }
+    return null;
   }, [guessResult]);
 
-  const feedback = handleFeedback();
+  const resultFeedback = handleFeedback();
 
   return (
     <Box mt={4} mx="20%">
-      {guess !== null && guessResult !== GuessResultType.NEUTRAL && (
-        <Typography variant="h5" textAlign="center">
-          Ok, you think the price will go:
+      {guess !== null && (
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Typography variant="h5">Ok, you think the price will go:</Typography>
           <Typography
             variant="h5"
             color={guess === GuessType.UP ? "success" : "error"}
           >
             {guess.toLocaleUpperCase()}
           </Typography>
-          Let's see if you are right...
-        </Typography>
+          <Typography variant="h5">Let's see if you are right...</Typography>
+        </Box>
       )}
-      {guessResult != null && (
-        <Alert severity={feedback?.alertType}>{feedback?.message}</Alert>
+
+      {resultFeedback && (
+        <Alert severity={resultFeedback.alertType}>
+          {resultFeedback.message}
+        </Alert>
       )}
     </Box>
   );

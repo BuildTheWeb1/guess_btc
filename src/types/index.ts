@@ -7,5 +7,4 @@ export enum GuessType {
 export enum GuessResultType {
   CORRECT = "correct",
   INCORRECT = "incorrect",
-  NEUTRAL = "neutral",
 }
