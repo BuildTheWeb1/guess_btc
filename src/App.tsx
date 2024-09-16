@@ -15,10 +15,13 @@ function App() {
   const [currentBtcPrice, setCurrentBtcPrice] = useState<number | null>(null);
   const [score, setScore] = useState<number>(0);
   const [guess, setGuess] = useState<GuessType | null>(null);
-  const [waiting, setWaiting] = useState<boolean>(false);
+  const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [guessResult, setGuessResult] = useState<GuessResultType | null>(null);
 
   const startPriceRef = useRef<number | null>(null);
+  const guessTimeRef = useRef<number | null>(null);
+  const hasPriceChangedRef = useRef<boolean>(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchPrice = useCallback(async () => {
     try {
@@ -33,25 +36,14 @@ function App() {
     }
   }, []);
 
-  const resolveGuess = useCallback(async () => {
+  const resolveGuess = useCallback(() => {
     const startPrice = startPriceRef.current;
 
-    const newPrice = await fetchBTCPrice();
-    if (newPrice === null) {
-      setWaiting(false);
-      return;
-    }
-
-    if (startPrice !== null && newPrice === startPrice) {
-      setGuessResult(GuessResultType.NEUTRAL);
-      setWaiting(false);
-      return;
-    }
+    if (currentBtcPrice === null || startPrice === null) return;
 
     if (
-      startPrice !== null &&
-      ((guess === GuessType.UP && newPrice > startPrice) ||
-        (guess === GuessType.DOWN && newPrice < startPrice))
+      (guess === GuessType.UP && currentBtcPrice > startPrice) ||
+      (guess === GuessType.DOWN && currentBtcPrice < startPrice)
     ) {
       setScore((prev) => Math.max(0, prev + 1));
       setGuessResult(GuessResultType.CORRECT);
@@ -60,26 +52,49 @@ function App() {
       setGuessResult(GuessResultType.INCORRECT);
     }
 
-    setCurrentBtcPrice(newPrice);
     setGuess(null);
-    setWaiting(false);
-  }, [guess]);
+    setIsWaiting(false);
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }, [currentBtcPrice, guess]);
 
   const handleGuessSubmit = useCallback(
     (guess: GuessType) => {
       startPriceRef.current = currentBtcPrice;
+      guessTimeRef.current = Date.now();
+      hasPriceChangedRef.current = false;
       setGuess(guess);
-      setWaiting(true);
+      setIsWaiting(true);
       setGuessResult(null);
 
-      setTimeout(() => resolveGuess(), 30000);
+      timeoutRef.current = setTimeout(() => {
+        if (hasPriceChangedRef.current) {
+          resolveGuess();
+        }
+      }, 60000);
     },
     [resolveGuess, currentBtcPrice]
   );
 
   useEffect(() => {
+    if (
+      isWaiting &&
+      startPriceRef.current &&
+      currentBtcPrice !== startPriceRef.current
+    ) {
+      hasPriceChangedRef.current = true;
+
+      if (Date.now() - (guessTimeRef.current || 0) >= 60000) {
+        resolveGuess();
+      }
+    }
+  }, [currentBtcPrice, isWaiting, resolveGuess]);
+
+  useEffect(() => {
     fetchPrice();
-    const interval = setInterval(fetchPrice, 30000);
+    const interval = setInterval(fetchPrice, 25000);
     return () => clearInterval(interval);
   }, [fetchPrice]);
 
@@ -101,8 +116,8 @@ function App() {
               <Typography variant="h6" gutterBottom>
                 Is the price going UP or DOWN?
               </Typography>
-              {waiting ? (
-                <CountdownTimer milliseconds={30000} />
+              {isWaiting ? (
+                <CountdownTimer milliseconds={60000} />
               ) : (
                 <GuessForm onSubmitGuess={handleGuessSubmit} />
               )}

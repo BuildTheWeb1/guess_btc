@@ -1,3 +1,4 @@
+import { Box, LinearProgress, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface CountdownTimerProps {
@@ -17,7 +18,16 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ milliseconds }) => {
     return () => clearInterval(timerId);
   }, [timeLeft]);
 
-  return <p>Guess result in {timeLeft} seconds...</p>;
+  return (
+    <Box>
+      <Typography mb={2}>
+        {timeLeft > 0
+          ? `Please wait at least ${timeLeft} seconds...`
+          : "Waiting for BTC price to update"}
+      </Typography>
+      <LinearProgress color="secondary" />
+    </Box>
+  );
 };
 
 export default CountdownTimer;
