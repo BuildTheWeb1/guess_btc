@@ -104,10 +104,15 @@ function App() {
     <Box m={4}>
       <Card>
         <CardContent>
-          <Typography variant="h1" textAlign="center" gutterBottom>
+          <Typography variant="h2" textAlign="center" gutterBottom>
             BTC - Guess The Price
           </Typography>
-          <Box display="flex" justifyContent="space-evenly">
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            alignItems="center"
+            justifyContent="space-evenly"
+          >
             <Score score={score} />
             <BTCPrice price={currentBtcPrice} />
           </Box>

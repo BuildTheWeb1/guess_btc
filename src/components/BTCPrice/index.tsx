@@ -28,7 +28,7 @@ const BTCPrice: React.FC<BTCPriceProps> = ({ price }) => {
 
   return (
     <Typography
-      variant="h3"
+      variant="h4"
       gutterBottom
       color={flashColor || "inherit"}
       style={{
