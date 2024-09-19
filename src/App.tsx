@@ -1,3 +1,4 @@
+import { graphqlOperation } from "@aws-amplify/api-graphql";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchBTCPrice } from "./api";
@@ -8,8 +9,11 @@ import {
   GuessForm,
   Loader,
   Score,
+  SelectPlayer,
 } from "./components";
-import { GuessResultType, GuessType } from "./types";
+import { updatePlayers } from "./graphql/mutations";
+import { GuessResultType, GuessType, PlayerType } from "./types";
+import { queryClient } from "./utils";
 
 function App() {
   const [currentBtcPrice, setCurrentBtcPrice] = useState<number | null>(null);
@@ -17,6 +21,7 @@ function App() {
   const [guess, setGuess] = useState<GuessType | null>(null);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [guessResult, setGuessResult] = useState<GuessResultType | null>(null);
+  const [currentPlayer, setCurrentPlayer] = useState<PlayerType | null>(null);
 
   const startPriceRef = useRef<number | null>(null);
   const guessTimeRef = useRef<number | null>(null);
@@ -35,6 +40,24 @@ function App() {
       console.error("Failed to fetch BTC price:", error);
     }
   }, []);
+
+  const updatePlayerScore = useCallback(async () => {
+    if (currentPlayer) {
+      try {
+        await queryClient.graphql(
+          graphqlOperation(updatePlayers, {
+            input: {
+              id: currentPlayer.id,
+              score,
+            },
+          })
+        );
+        console.log("Score updated for player:", currentPlayer.name);
+      } catch (error) {
+        console.error("Failed to update player score:", error);
+      }
+    }
+  }, [currentPlayer, score]);
 
   const resolveGuess = useCallback(() => {
     const startPrice = startPriceRef.current;
@@ -78,6 +101,11 @@ function App() {
     [resolveGuess, currentBtcPrice]
   );
 
+  const handlePlayerSelect = useCallback((player: PlayerType) => {
+    setCurrentPlayer(player);
+    setScore(player.score);
+  }, []);
+
   useEffect(() => {
     if (
       isWaiting &&
@@ -98,6 +126,12 @@ function App() {
     return () => clearInterval(interval);
   }, [fetchPrice]);
 
+  useEffect(() => {
+    if (currentPlayer && currentPlayer.score !== score) {
+      updatePlayerScore();
+    }
+  }, [score, currentPlayer, updatePlayerScore]);
+
   if (currentBtcPrice === null) return <Loader />;
 
   return (
@@ -107,6 +141,7 @@ function App() {
           <Typography variant="h2" textAlign="center" gutterBottom>
             BTC - Guess The Price
           </Typography>
+          <SelectPlayer onSelect={handlePlayerSelect} />
           <Box
             display="flex"
             flexDirection={{ xs: "column", md: "row" }}
