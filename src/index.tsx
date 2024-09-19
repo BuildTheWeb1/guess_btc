@@ -8,11 +8,10 @@ import { Amplify } from "aws-amplify";
 Amplify.configure({
   API: {
     GraphQL: {
-      endpoint:
-        "https://l2r6giz6x5cd3hin3522j7wadm.appsync-api.eu-central-1.amazonaws.com/graphql",
+      endpoint: process.env.REACT_APP_API_ENDPOINT || "",
       region: "eu-central-1",
       defaultAuthMode: "apiKey",
-      apiKey: "da2-4nwmmvtz7ng4bljk2htuwvacda",
+      apiKey: process.env.REACT_APP_API_KEY || "",
     },
   },
 });
