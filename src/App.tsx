@@ -1,15 +1,21 @@
+import { graphqlOperation } from "@aws-amplify/api-graphql";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchBTCPrice } from "./api";
 import {
+  AddNewPlayer,
   BTCPrice,
   ChatBox,
   CountdownTimer,
   GuessForm,
   Loader,
   Score,
+  SelectPlayer,
 } from "./components";
-import { GuessResultType, GuessType } from "./types";
+import { updatePlayers } from "./graphql/mutations";
+import { listPlayers } from "./graphql/queries";
+import { GuessResultType, GuessType, PlayerType } from "./types";
+import { loadFromLocalStorage, queryClient, saveToLocalStorage } from "./utils";
 
 function App() {
   const [currentBtcPrice, setCurrentBtcPrice] = useState<number | null>(null);
@@ -17,6 +23,8 @@ function App() {
   const [guess, setGuess] = useState<GuessType | null>(null);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [guessResult, setGuessResult] = useState<GuessResultType | null>(null);
+  const [currentPlayer, setCurrentPlayer] = useState<PlayerType | null>(null);
+  const [players, setPlayers] = useState<PlayerType[]>([]);
 
   const startPriceRef = useRef<number | null>(null);
   const guessTimeRef = useRef<number | null>(null);
@@ -35,6 +43,37 @@ function App() {
       console.error("Failed to fetch BTC price:", error);
     }
   }, []);
+
+  const fetchPlayers = useCallback(async () => {
+    try {
+      const result = await queryClient.graphql({
+        query: listPlayers,
+      });
+
+      const playersData = result.data?.listPlayers?.items as PlayerType[];
+      setPlayers(playersData);
+    } catch (error) {
+      console.error("Error fetching players:", error);
+    }
+  }, []);
+
+  const updatePlayerScore = useCallback(async () => {
+    if (currentPlayer) {
+      try {
+        await queryClient.graphql(
+          graphqlOperation(updatePlayers, {
+            input: {
+              id: currentPlayer.id,
+              score,
+            },
+          })
+        );
+        console.log("Score updated for player:", currentPlayer.name);
+      } catch (error) {
+        console.error("Failed to update player score:", error);
+      }
+    }
+  }, [currentPlayer, score]);
 
   const resolveGuess = useCallback(() => {
     const startPrice = startPriceRef.current;
@@ -75,7 +114,20 @@ function App() {
         }
       }, 60000);
     },
-    [resolveGuess, currentBtcPrice]
+    [currentBtcPrice, resolveGuess]
+  );
+
+  const handlePlayerSelect = useCallback((player: PlayerType) => {
+    setCurrentPlayer(player);
+    setScore(player.score);
+  }, []);
+
+  const handleNewPlayerCreate = useCallback(
+    (newPlayer: PlayerType) => {
+      setCurrentPlayer(newPlayer);
+      fetchPlayers();
+    },
+    [fetchPlayers]
   );
 
   useEffect(() => {
@@ -98,6 +150,33 @@ function App() {
     return () => clearInterval(interval);
   }, [fetchPrice]);
 
+  useEffect(() => {
+    fetchPlayers();
+  }, [fetchPlayers]);
+
+  useEffect(() => {
+    if (currentPlayer) {
+      saveToLocalStorage("currentPlayer", currentPlayer);
+      saveToLocalStorage("score", score);
+    }
+  }, [currentPlayer, score]);
+
+  useEffect(() => {
+    const savedPlayer = loadFromLocalStorage("currentPlayer");
+    const savedScore = loadFromLocalStorage("score");
+
+    if (savedPlayer) {
+      setCurrentPlayer(savedPlayer);
+      setScore(savedScore ?? 0);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentPlayer && currentPlayer.score !== score) {
+      updatePlayerScore();
+    }
+  }, [score, currentPlayer, updatePlayerScore]);
+
   if (currentBtcPrice === null) return <Loader />;
 
   return (
@@ -107,6 +186,12 @@ function App() {
           <Typography variant="h2" textAlign="center" gutterBottom>
             BTC - Guess The Price
           </Typography>
+          <AddNewPlayer onCreate={handleNewPlayerCreate} />
+          <SelectPlayer
+            players={players}
+            currentPlayer={currentPlayer}
+            onSelect={handlePlayerSelect}
+          />
           <Box
             display="flex"
             flexDirection={{ xs: "column", md: "row" }}
@@ -124,7 +209,10 @@ function App() {
               {isWaiting ? (
                 <CountdownTimer milliseconds={60000} />
               ) : (
-                <GuessForm onSubmitGuess={handleGuessSubmit} />
+                <GuessForm
+                  player={currentPlayer}
+                  onSubmitGuess={handleGuessSubmit}
+                />
               )}
             </Box>
           </Box>
