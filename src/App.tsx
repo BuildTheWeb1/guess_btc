@@ -98,7 +98,7 @@ function App() {
         }
       }, 60000);
     },
-    [resolveGuess, currentBtcPrice]
+    [currentBtcPrice, resolveGuess]
   );
 
   const handlePlayerSelect = useCallback((player: PlayerType) => {
@@ -159,7 +159,10 @@ function App() {
               {isWaiting ? (
                 <CountdownTimer milliseconds={60000} />
               ) : (
-                <GuessForm onSubmitGuess={handleGuessSubmit} />
+                <GuessForm
+                  player={currentPlayer}
+                  onSubmitGuess={handleGuessSubmit}
+                />
               )}
             </Box>
           </Box>

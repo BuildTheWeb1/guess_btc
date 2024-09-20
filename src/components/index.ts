@@ -1,3 +1,4 @@
+export { default as AlertSnack } from "./AlertSnack";
 export { default as BTCPrice } from "./BTCPrice";
 export { default as ChatBox } from "./ChatBox";
 export { default as CountdownTimer } from "./CountdownTimer";
