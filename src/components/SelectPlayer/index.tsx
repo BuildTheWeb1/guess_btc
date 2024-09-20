@@ -7,40 +7,32 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { ListPlayersQuery } from "../../graphql/GraphQLAPI";
-import { listPlayers } from "../../graphql/queries";
 import { PlayerType } from "../../types";
-import { loadFromLocalStorage, queryClient } from "../../utils";
+import { loadFromLocalStorage } from "../../utils";
 
-const SelectPlayer: React.FC<{ onSelect: (player: PlayerType) => void }> = ({
+interface SelectPlayerProps {
+  players: PlayerType[];
+  currentPlayer: PlayerType | null;
+  onSelect: (player: PlayerType) => void;
+}
+
+const SelectPlayer: React.FC<SelectPlayerProps> = ({
+  players,
   onSelect,
+  currentPlayer,
 }) => {
-  const [players, setPlayers] = useState<PlayerType[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<string>("");
 
   useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        const result = (await queryClient.graphql({ query: listPlayers })) as {
-          data: ListPlayersQuery;
-        };
-        setPlayers(result.data.listPlayers?.items as PlayerType[]);
-      } catch (error) {
-        console.error("Error fetching players:", error);
+    if (currentPlayer) {
+      setSelectedPlayer(currentPlayer.id);
+    } else {
+      const savedPlayer = loadFromLocalStorage("currentPlayer");
+      if (savedPlayer) {
+        setSelectedPlayer(savedPlayer.id);
       }
-    };
-
-    fetchPlayers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const savedPlayer = loadFromLocalStorage("currentPlayer");
-
-    if (savedPlayer) {
-      setSelectedPlayer(savedPlayer.id);
     }
-  }, []);
+  }, [currentPlayer]);
 
   const handleSelectChange = useCallback(
     (event: SelectChangeEvent<string>) => {

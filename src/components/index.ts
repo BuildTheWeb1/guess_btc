@@ -1,3 +1,4 @@
+export { default as AddNewPlayer } from "./AddNewPlayer";
 export { default as AlertSnack } from "./AlertSnack";
 export { default as BTCPrice } from "./BTCPrice";
 export { default as ChatBox } from "./ChatBox";

@@ -3,6 +3,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchBTCPrice } from "./api";
 import {
+  AddNewPlayer,
   BTCPrice,
   ChatBox,
   CountdownTimer,
@@ -12,6 +13,7 @@ import {
   SelectPlayer,
 } from "./components";
 import { updatePlayers } from "./graphql/mutations";
+import { listPlayers } from "./graphql/queries";
 import { GuessResultType, GuessType, PlayerType } from "./types";
 import { loadFromLocalStorage, queryClient, saveToLocalStorage } from "./utils";
 
@@ -22,6 +24,7 @@ function App() {
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [guessResult, setGuessResult] = useState<GuessResultType | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState<PlayerType | null>(null);
+  const [players, setPlayers] = useState<PlayerType[]>([]);
 
   const startPriceRef = useRef<number | null>(null);
   const guessTimeRef = useRef<number | null>(null);
@@ -38,6 +41,19 @@ function App() {
       }
     } catch (error) {
       console.error("Failed to fetch BTC price:", error);
+    }
+  }, []);
+
+  const fetchPlayers = useCallback(async () => {
+    try {
+      const result = await queryClient.graphql({
+        query: listPlayers,
+      });
+
+      const playersData = result.data?.listPlayers?.items as PlayerType[];
+      setPlayers(playersData);
+    } catch (error) {
+      console.error("Error fetching players:", error);
     }
   }, []);
 
@@ -106,6 +122,14 @@ function App() {
     setScore(player.score);
   }, []);
 
+  const handleNewPlayerCreate = useCallback(
+    (newPlayer: PlayerType) => {
+      setCurrentPlayer(newPlayer);
+      fetchPlayers();
+    },
+    [fetchPlayers]
+  );
+
   useEffect(() => {
     if (
       isWaiting &&
@@ -125,6 +149,10 @@ function App() {
     const interval = setInterval(fetchPrice, 25000);
     return () => clearInterval(interval);
   }, [fetchPrice]);
+
+  useEffect(() => {
+    fetchPlayers();
+  }, [fetchPlayers]);
 
   useEffect(() => {
     if (currentPlayer) {
@@ -158,7 +186,12 @@ function App() {
           <Typography variant="h2" textAlign="center" gutterBottom>
             BTC - Guess The Price
           </Typography>
-          <SelectPlayer onSelect={handlePlayerSelect} />
+          <AddNewPlayer onCreate={handleNewPlayerCreate} />
+          <SelectPlayer
+            players={players}
+            currentPlayer={currentPlayer}
+            onSelect={handlePlayerSelect}
+          />
           <Box
             display="flex"
             flexDirection={{ xs: "column", md: "row" }}
