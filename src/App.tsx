@@ -13,7 +13,7 @@ import {
 } from "./components";
 import { updatePlayers } from "./graphql/mutations";
 import { GuessResultType, GuessType, PlayerType } from "./types";
-import { queryClient } from "./utils";
+import { loadFromLocalStorage, queryClient, saveToLocalStorage } from "./utils";
 
 function App() {
   const [currentBtcPrice, setCurrentBtcPrice] = useState<number | null>(null);
@@ -125,6 +125,23 @@ function App() {
     const interval = setInterval(fetchPrice, 25000);
     return () => clearInterval(interval);
   }, [fetchPrice]);
+
+  useEffect(() => {
+    if (currentPlayer) {
+      saveToLocalStorage("currentPlayer", currentPlayer);
+      saveToLocalStorage("score", score);
+    }
+  }, [currentPlayer, score]);
+
+  useEffect(() => {
+    const savedPlayer = loadFromLocalStorage("currentPlayer");
+    const savedScore = loadFromLocalStorage("score");
+
+    if (savedPlayer) {
+      setCurrentPlayer(savedPlayer);
+      setScore(savedScore ?? 0);
+    }
+  }, []);
 
   useEffect(() => {
     if (currentPlayer && currentPlayer.score !== score) {

@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ListPlayersQuery } from "../../graphql/GraphQLAPI";
 import { listPlayers } from "../../graphql/queries";
 import { PlayerType } from "../../types";
-import { queryClient } from "../../utils";
+import { loadFromLocalStorage, queryClient } from "../../utils";
 
 const SelectPlayer: React.FC<{ onSelect: (player: PlayerType) => void }> = ({
   onSelect,
@@ -32,6 +32,14 @@ const SelectPlayer: React.FC<{ onSelect: (player: PlayerType) => void }> = ({
 
     fetchPlayers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const savedPlayer = loadFromLocalStorage("currentPlayer");
+
+    if (savedPlayer) {
+      setSelectedPlayer(savedPlayer.id);
+    }
   }, []);
 
   const handleSelectChange = useCallback(
