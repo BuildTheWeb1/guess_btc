@@ -60,6 +60,12 @@ const GuessForm: React.FC<GuessFormProps> = ({ player, onSubmitGuess }) => {
         color="secondary"
         type="submit"
         disabled={!guess || !player}
+        sx={{
+          fontWeight: "bold",
+          borderRadius: "8px",
+          padding: "10px 20px",
+          fontSize: "1rem",
+        }}
       >
         Submit Guess
         <KeyboardDoubleArrowRightIcon />

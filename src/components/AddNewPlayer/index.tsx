@@ -9,7 +9,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { CreatePlayersMutation } from "../../graphql/GraphQLAPI";
 import { createPlayers } from "../../graphql/mutations";
 import { PlayerType } from "../../types";
@@ -17,14 +17,21 @@ import { queryClient } from "../../utils";
 
 interface AddNewPlayerProps {
   onCreate: (newPlayer: PlayerType) => void;
+  isDisabled: boolean;
 }
 
-const AddNewPlayer: React.FC<AddNewPlayerProps> = ({ onCreate }) => {
+const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
+  onCreate,
+  isDisabled,
+}) => {
   const [open, setOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleClickOpen = () => {
+  const appliedColor = useMemo(() => "#8e24aa", []);
+  const hoverAppliedColor = useMemo(() => "#6a1b9a", []);
+
+  const handleOpen = () => {
     setOpen(true);
   };
 
@@ -70,8 +77,25 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({ onCreate }) => {
   }, [name, onCreate]);
 
   return (
-    <Box mt={4}>
-      <Button variant="outlined" onClick={handleClickOpen}>
+    <Box>
+      <Button
+        variant="contained"
+        color="secondary"
+        size="large"
+        onClick={handleOpen}
+        disabled={isDisabled}
+        sx={{
+          fontWeight: "bold",
+          borderRadius: "0.75rem",
+          padding: "0.75rem 1.5rem",
+          backgroundColor: appliedColor,
+          fontSize: "1rem",
+          color: "#fff",
+          "&:hover": {
+            backgroundColor: hoverAppliedColor,
+          },
+        }}
+      >
         Add New Player
       </Button>
       <Dialog
@@ -80,10 +104,29 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({ onCreate }) => {
         aria-labelledby="add-new-player-title"
         aria-describedby="add-new-player-description"
         fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: "16px",
+            padding: "16px",
+          },
+        }}
       >
-        <DialogTitle id="add-new-player-title">Add a new player</DialogTitle>
+        <DialogTitle
+          id="add-new-player-title"
+          sx={{
+            fontWeight: "bold",
+            fontSize: "1.5rem",
+            textAlign: "center",
+          }}
+        >
+          Add a new player
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="add-new-player-description" py={2}>
+          <DialogContentText
+            id="add-new-player-description"
+            py={2}
+            sx={{ color: "#757575", fontSize: "1rem" }}
+          >
             <TextField
               fullWidth
               label="Player Name"
@@ -95,9 +138,39 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({ onCreate }) => {
             />
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button autoFocus variant="contained" onClick={handleSubmit}>
+        <DialogActions
+          sx={{
+            justifyContent: "space-between",
+            padding: "8px 1.5rem",
+          }}
+        >
+          <Button
+            onClick={handleClose}
+            sx={{
+              color: hoverAppliedColor,
+              fontWeight: "bold",
+              "&:hover": {
+                color: appliedColor,
+              },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            autoFocus
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            sx={{
+              padding: "8px 16px",
+              fontWeight: "bold",
+              backgroundColor: appliedColor,
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: hoverAppliedColor,
+              },
+            }}
+          >
             Create Player
           </Button>
         </DialogActions>

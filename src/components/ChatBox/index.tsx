@@ -29,22 +29,30 @@ const ChatBox: React.FC<ChatBoxProps> = ({ guess, guessResult }) => {
   const resultFeedback = handleFeedback();
 
   return (
-    <Box mt={4} mx="20%">
+    <Box mt={4}>
       {guess !== null && (
         <Box display="flex" flexDirection="column" alignItems="center">
-          <Typography variant="h5">Ok, you think the price will go:</Typography>
+          <Typography fontSize="1.2rem">
+            Ok, you think the price will go:{" "}
+          </Typography>
           <Typography
-            variant="h5"
+            fontWeight="bold"
+            fontSize="1.5rem"
             color={guess === GuessType.UP ? "success" : "error"}
           >
             {guess.toLocaleUpperCase()}
           </Typography>
-          <Typography variant="h5">Let's see if you are right...</Typography>
+          <Typography fontSize="1.2rem">
+            Let's see if you are right...
+          </Typography>
         </Box>
       )}
 
       {resultFeedback && (
-        <Alert severity={resultFeedback.alertType}>
+        <Alert
+          severity={resultFeedback.alertType}
+          sx={{ fontWeight: "bold", fontSize: "1rem", borderRadius: "0.75rem" }}
+        >
           {resultFeedback.message}
         </Alert>
       )}

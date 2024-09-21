@@ -14,12 +14,14 @@ interface SelectPlayerProps {
   players: PlayerType[];
   currentPlayer: PlayerType | null;
   onSelect: (player: PlayerType) => void;
+  isDisabled: boolean;
 }
 
 const SelectPlayer: React.FC<SelectPlayerProps> = ({
   players,
   onSelect,
   currentPlayer,
+  isDisabled,
 }) => {
   const [selectedPlayer, setSelectedPlayer] = useState<string>("");
 
@@ -47,8 +49,8 @@ const SelectPlayer: React.FC<SelectPlayerProps> = ({
   );
 
   return (
-    <Box sx={{ minWidth: 120 }} mt={2} mb={4} maxWidth={200} mx="auto">
-      <FormControl fullWidth>
+    <Box sx={{ minWidth: 180 }} maxWidth={250}>
+      <FormControl fullWidth disabled={isDisabled}>
         <InputLabel id="player-select">Select Player:</InputLabel>
         <Select
           labelId="player-select"
@@ -56,6 +58,10 @@ const SelectPlayer: React.FC<SelectPlayerProps> = ({
           label="Select Player"
           onChange={handleSelectChange}
           value={selectedPlayer}
+          sx={{
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+          }}
         >
           {players.map((player) => (
             <MenuItem key={player.id} value={player.id}>
