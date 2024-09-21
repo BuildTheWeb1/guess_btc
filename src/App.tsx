@@ -181,34 +181,76 @@ function App() {
   if (currentBtcPrice === null) return <Loader />;
 
   return (
-    <Box m={4}>
-      <Card>
+    <Box
+      sx={{
+        background: "linear-gradient(135deg, #7E57C2, #C5CAE9)",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Card
+        sx={{
+          minWidth: "50%",
+          boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.1)",
+          borderRadius: "0.75rem",
+          padding: "2rem 4rem",
+          backgroundColor: "#fff",
+        }}
+      >
         <CardContent>
-          <Typography variant="h2" textAlign="center" gutterBottom>
+          <Typography
+            variant="h1"
+            textAlign="center"
+            gutterBottom
+            sx={{
+              fontWeight: 500,
+              fontSize: "3rem",
+              my: 4,
+            }}
+          >
             BTC - Guess The Price
           </Typography>
-          <AddNewPlayer
-            onCreate={handleNewPlayerCreate}
-            isDisabled={isWaiting}
-          />
-          <SelectPlayer
-            players={players}
-            currentPlayer={currentPlayer}
-            onSelect={handlePlayerSelect}
-            isDisabled={isWaiting}
-          />
+
           <Box
             display="flex"
             flexDirection={{ xs: "column", md: "row" }}
             alignItems="center"
-            justifyContent="space-evenly"
+            justifyContent="space-between"
+            mb={4}
+            gap={2}
           >
             <Score score={score} />
             <BTCPrice price={currentBtcPrice} />
           </Box>
+
+          <Box
+            py={2}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexDirection: { xs: "column", sm: "row" },
+              mb: 4,
+              gap: 2,
+            }}
+          >
+            <AddNewPlayer
+              onCreate={handleNewPlayerCreate}
+              isDisabled={isWaiting}
+            />
+            <SelectPlayer
+              players={players}
+              currentPlayer={currentPlayer}
+              onSelect={handlePlayerSelect}
+              isDisabled={isWaiting}
+            />
+          </Box>
+
           <Box mt={8} display="flex" justifyContent="center">
             <Box textAlign="center">
-              <Typography variant="h6" gutterBottom>
+              <Typography fontWeight="bold" fontSize="1.5rem" gutterBottom>
                 Is the price going UP or DOWN?
               </Typography>
               {isWaiting ? (
@@ -221,9 +263,9 @@ function App() {
               )}
             </Box>
           </Box>
+          <ChatBox guess={guess} guessResult={guessResult} />
         </CardContent>
       </Card>
-      <ChatBox guess={guess} guessResult={guessResult} />
     </Box>
   );
 }
