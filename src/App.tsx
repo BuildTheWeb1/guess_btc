@@ -187,11 +187,15 @@ function App() {
           <Typography variant="h2" textAlign="center" gutterBottom>
             BTC - Guess The Price
           </Typography>
-          <AddNewPlayer onCreate={handleNewPlayerCreate} disabled={isWaiting} />
+          <AddNewPlayer
+            onCreate={handleNewPlayerCreate}
+            isDisabled={isWaiting}
+          />
           <SelectPlayer
             players={players}
             currentPlayer={currentPlayer}
             onSelect={handlePlayerSelect}
+            isDisabled={isWaiting}
           />
           <Box
             display="flex"

@@ -17,10 +17,13 @@ import { queryClient } from "../../utils";
 
 interface AddNewPlayerProps {
   onCreate: (newPlayer: PlayerType) => void;
-  disabled: boolean;
+  isDisabled: boolean;
 }
 
-const AddNewPlayer: React.FC<AddNewPlayerProps> = ({ onCreate, disabled }) => {
+const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
+  onCreate,
+  isDisabled,
+}) => {
   const [open, setOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +75,7 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({ onCreate, disabled }) => {
 
   return (
     <Box mt={4}>
-      <Button variant="outlined" onClick={handleOpen} disabled={disabled}>
+      <Button variant="outlined" onClick={handleOpen} disabled={isDisabled}>
         Add New Player
       </Button>
       <Dialog
