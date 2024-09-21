@@ -125,6 +125,7 @@ function App() {
   const handleNewPlayerCreate = useCallback(
     (newPlayer: PlayerType) => {
       setCurrentPlayer(newPlayer);
+      setScore(0);
       fetchPlayers();
     },
     [fetchPlayers]
@@ -186,7 +187,7 @@ function App() {
           <Typography variant="h2" textAlign="center" gutterBottom>
             BTC - Guess The Price
           </Typography>
-          <AddNewPlayer onCreate={handleNewPlayerCreate} />
+          <AddNewPlayer onCreate={handleNewPlayerCreate} disabled={isWaiting} />
           <SelectPlayer
             players={players}
             currentPlayer={currentPlayer}
