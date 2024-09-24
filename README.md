@@ -2,8 +2,9 @@
 
 This is a React-based application that allows users to guess whether the price of Bitcoin (BTC) will go up or down. Players can select a user, make a guess, and see their score change based on the result of their guess. The app integrates with AWS Amplify, AppSync, and DynamoDB to store and manage player data and their scores.
 
-- CoinGecko’s public free API caches the data and refreshes once every 5 minutes.
-  Demo: https://master.d2q6c76wbtogmw.amplifyapp.com/
+CoinGecko’s public free API caches the data and refreshes once every 5 minutes.
+
+Demo: https://master.d2q6c76wbtogmw.amplifyapp.com/
 
 ## Features
 
