@@ -109,7 +109,8 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
           <DialogContentText
             id="add-new-player-description"
             component="span"
-            py={2}
+            display="block"
+            pt={2}
             sx={{ color: "#757575", fontSize: "1rem" }}
           >
             <TextField
