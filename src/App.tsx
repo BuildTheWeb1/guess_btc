@@ -231,7 +231,6 @@ function App() {
             <Card sx={{ mb: 4, padding: 2, borderRadius: "0.75rem" }}>
               <CardContent>
                 <BTCPrice price={currentBtcPrice} />
-                {/* Additional Info for BTC can go here */}
               </CardContent>
             </Card>
 
