@@ -1,10 +1,12 @@
 import { graphqlOperation } from "@aws-amplify/api-graphql";
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchBTCPrice } from "./api";
 import {
   AddNewPlayer,
+  AppFooter,
   BTCPrice,
+  Character,
   ChatBox,
   CountdownTimer,
   GuessForm,
@@ -183,89 +185,107 @@ function App() {
   return (
     <Box
       sx={{
-        background: "linear-gradient(135deg, #7E57C2, #C5CAE9)",
-        minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
+        flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#e8f5e9",
+        minHeight: "100vh",
       }}
     >
-      <Card
+      <Box
         sx={{
-          minWidth: "50%",
-          boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.1)",
-          borderRadius: "0.75rem",
-          padding: "2rem 4rem",
-          backgroundColor: "#fff",
+          flexGrow: 1,
+          display: "flex",
+          alignItems: "center",
+          px: 4,
         }}
       >
-        <CardContent>
-          <Typography
-            variant="h1"
-            textAlign="center"
-            gutterBottom
-            sx={{
-              fontWeight: 500,
-              fontSize: "3rem",
-              my: 4,
-            }}
-          >
-            BTC - Guess The Price
-          </Typography>
-
-          <Box
-            display="flex"
-            flexDirection={{ xs: "column", md: "row" }}
-            alignItems="center"
-            justifyContent="space-between"
-            mb={4}
-            gap={2}
-          >
-            <Score score={score} />
-            <BTCPrice price={currentBtcPrice} />
-          </Box>
-
-          <Box
-            py={2}
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexDirection: { xs: "column", sm: "row" },
-              mb: 4,
-              gap: 2,
-            }}
-          >
-            <AddNewPlayer
-              onCreate={handleNewPlayerCreate}
-              isDisabled={isWaiting}
-            />
-            <SelectPlayer
-              players={players}
-              currentPlayer={currentPlayer}
-              onSelect={handlePlayerSelect}
-              isDisabled={isWaiting}
-            />
-          </Box>
-
-          <Box mt={8} display="flex" justifyContent="center">
-            <Box textAlign="center">
-              <Typography fontWeight="bold" fontSize="1.5rem" gutterBottom>
-                Is the price going UP or DOWN?
+        <Grid container spacing={6} justifyContent="center" maxWidth={1400}>
+          <Grid item xs={12} md={5}>
+            <Typography
+              variant="h1"
+              fontSize={{ xs: "3rem", sm: "3.5rem", md: "4rem" }}
+              fontWeight="bold"
+            >
+              BTC - Guess The Price
+            </Typography>
+            <Box mt={6}>
+              <Typography fontSize="1.5rem" gutterBottom>
+                Pick your guess! Is the price going UP or DOWN?
               </Typography>
-              {isWaiting ? (
-                <CountdownTimer milliseconds={60000} />
-              ) : (
-                <GuessForm
-                  player={currentPlayer}
-                  onSubmitGuess={handleGuessSubmit}
-                />
-              )}
+              <Box mt={4}>
+                {isWaiting ? (
+                  <CountdownTimer milliseconds={60000} />
+                ) : (
+                  <GuessForm
+                    player={currentPlayer}
+                    onSubmitGuess={handleGuessSubmit}
+                  />
+                )}
+              </Box>
             </Box>
-          </Box>
-          <ChatBox guess={guess} guessResult={guessResult} />
-        </CardContent>
-      </Card>
+          </Grid>
+
+          <Grid item xs={12} md={7}>
+            <Card sx={{ mb: 4, padding: 2, borderRadius: "0.75rem" }}>
+              <CardContent>
+                <BTCPrice price={currentBtcPrice} />
+                {/* Additional Info for BTC can go here */}
+              </CardContent>
+            </Card>
+
+            <Card
+              sx={{
+                backgroundColor: "#26453F",
+                padding: 2,
+                borderRadius: "0.75rem",
+              }}
+            >
+              <CardContent>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  flexDirection={{ xs: "column", sm: "row" }}
+                  gap={4}
+                  mb={4}
+                >
+                  <AddNewPlayer
+                    onCreate={handleNewPlayerCreate}
+                    isDisabled={isWaiting}
+                  />
+                  <SelectPlayer
+                    players={players}
+                    currentPlayer={currentPlayer}
+                    onSelect={handlePlayerSelect}
+                    isDisabled={isWaiting}
+                  />
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  flexDirection={{
+                    xs: "column",
+                    sm: "row",
+                    md: "column",
+                    lg: "row",
+                  }}
+                >
+                  <Box>
+                    <Score score={score} />
+                    <ChatBox guess={guess} guessResult={guessResult} />
+                  </Box>
+                  <Box>
+                    <Character guessResult={guessResult} />
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Box>
+      <AppFooter />
     </Box>
   );
 }

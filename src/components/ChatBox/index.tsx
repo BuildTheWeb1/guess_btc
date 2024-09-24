@@ -1,6 +1,7 @@
-import { Alert, AlertColor, Box, Typography } from "@mui/material";
+import { AlertColor, Box, Typography } from "@mui/material";
 import { useCallback } from "react";
 import { GuessResultType, GuessType } from "../../types";
+import { colorError, colorPrimary } from "../../utils";
 
 interface ChatBoxProps {
   guess: GuessType | null;
@@ -29,32 +30,34 @@ const ChatBox: React.FC<ChatBoxProps> = ({ guess, guessResult }) => {
   const resultFeedback = handleFeedback();
 
   return (
-    <Box mt={4}>
+    <Box mt={4} color="white">
       {guess !== null && (
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <Typography fontSize="1.2rem">
+        <Box display="flex" flexDirection="column" gap={1}>
+          <Typography fontSize="1.2rem" fontWeight="bold">
             Ok, you think the price will go:{" "}
+            <span
+              style={{
+                color: guess === GuessType.UP ? colorPrimary : colorError,
+              }}
+            >
+              {guess.toLocaleUpperCase()}
+            </span>
           </Typography>
-          <Typography
-            fontWeight="bold"
-            fontSize="1.5rem"
-            color={guess === GuessType.UP ? "success" : "error"}
-          >
-            {guess.toLocaleUpperCase()}
-          </Typography>
-          <Typography fontSize="1.2rem">
+          <Typography fontSize="1.2rem" fontWeight="bold">
             Let's see if you are right...
           </Typography>
         </Box>
       )}
-
       {resultFeedback && (
-        <Alert
-          severity={resultFeedback.alertType}
-          sx={{ fontWeight: "bold", fontSize: "1rem", borderRadius: "0.75rem" }}
+        <Typography
+          fontSize="1.5rem"
+          fontWeight="bold"
+          color={
+            resultFeedback.alertType === "success" ? colorPrimary : colorError
+          }
         >
           {resultFeedback.message}
-        </Alert>
+        </Typography>
       )}
     </Box>
   );

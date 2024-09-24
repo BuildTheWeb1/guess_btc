@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { PlayerType } from "../../types";
-import { loadFromLocalStorage } from "../../utils";
+import { colorError, loadFromLocalStorage } from "../../utils";
 
 interface SelectPlayerProps {
   players: PlayerType[];
@@ -50,8 +50,10 @@ const SelectPlayer: React.FC<SelectPlayerProps> = ({
 
   return (
     <Box sx={{ minWidth: 180 }} maxWidth={250}>
-      <FormControl fullWidth disabled={isDisabled}>
-        <InputLabel id="player-select">Select Player:</InputLabel>
+      <FormControl variant="standard" fullWidth disabled={isDisabled}>
+        <InputLabel id="player-select" style={{ color: "white" }}>
+          Select Player:
+        </InputLabel>
         <Select
           labelId="player-select"
           id="demo-simple-select"
@@ -59,8 +61,18 @@ const SelectPlayer: React.FC<SelectPlayerProps> = ({
           onChange={handleSelectChange}
           value={selectedPlayer}
           sx={{
-            backgroundColor: "#fff",
-            borderRadius: "8px",
+            backgroundColor: "transparent",
+            borderRadius: "1rem",
+            color: "white",
+            "& .MuiSelect-icon": {
+              color: "white",
+            },
+            "&:before": {
+              borderBottomColor: "rgba(255, 255, 255, 0.42)",
+            },
+            "&:after": {
+              borderBottomColor: colorError,
+            },
           }}
         >
           {players.map((player) => (

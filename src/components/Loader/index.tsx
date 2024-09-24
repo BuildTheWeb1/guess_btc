@@ -1,4 +1,5 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { colorError } from "../../utils";
 
 const Loader: React.FC = () => {
   return (
@@ -9,10 +10,15 @@ const Loader: React.FC = () => {
       alignItems="center"
       justifyContent="center"
     >
-      <Typography variant="h3" mb={2}>
+      <Typography variant="h3" mb={4} textAlign="center">
         Waiting for API to load...
       </Typography>
-      <CircularProgress size="5rem" />
+      <CircularProgress
+        size="6rem"
+        sx={{
+          color: colorError,
+        }}
+      />
     </Box>
   );
 };

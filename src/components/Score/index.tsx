@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { usePreviousValue } from "../../hooks";
 
@@ -27,16 +27,22 @@ const Score: React.FC<ScoreProps> = ({ score }) => {
   }, [score, previousScore]);
 
   return (
-    <Typography
-      variant="h4"
-      gutterBottom
-      color={flashColor || "inherit"}
-      style={{
-        transition: "color 0.5s ease",
-      }}
-    >
-      SCORE: {Math.max(score, 0)}
-    </Typography>
+    <Box display="flex" flexDirection="column" alignItems="center" color="#FFF">
+      <Typography
+        sx={{ fontSize: "2rem" }}
+        style={{
+          transition: "color 0.5s ease",
+        }}
+      >
+        SCORE:
+      </Typography>
+      <Typography
+        sx={{ fontWeight: "bold", fontSize: "4rem" }}
+        color={flashColor || "inherit"}
+      >
+        {Math.max(score, 0)}
+      </Typography>
+    </Box>
   );
 };
 

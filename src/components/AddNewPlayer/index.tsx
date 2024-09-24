@@ -1,7 +1,6 @@
 import { graphqlOperation, GraphQLResult } from "@aws-amplify/api-graphql";
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -9,11 +8,12 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { CreatePlayersMutation } from "../../graphql/GraphQLAPI";
 import { createPlayers } from "../../graphql/mutations";
 import { PlayerType } from "../../types";
-import { queryClient } from "../../utils";
+import { colorError, colorPrimary, queryClient } from "../../utils";
+import AppButton from "../AppButton";
 
 interface AddNewPlayerProps {
   onCreate: (newPlayer: PlayerType) => void;
@@ -27,9 +27,6 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
   const [open, setOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-
-  const appliedColor = useMemo(() => "#8e24aa", []);
-  const hoverAppliedColor = useMemo(() => "#6a1b9a", []);
 
   const handleOpen = () => {
     setOpen(true);
@@ -61,6 +58,7 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
       ).createPlayers;
 
       setOpen(false);
+
       if (newPlayer) {
         onCreate({
           id: newPlayer.id,
@@ -78,26 +76,12 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
 
   return (
     <Box>
-      <Button
-        variant="contained"
-        color="secondary"
-        size="large"
+      <AppButton
+        text="Add New Player!"
         onClick={handleOpen}
         disabled={isDisabled}
-        sx={{
-          fontWeight: "bold",
-          borderRadius: "0.75rem",
-          padding: "0.75rem 1.5rem",
-          backgroundColor: appliedColor,
-          fontSize: "1rem",
-          color: "#fff",
-          "&:hover": {
-            backgroundColor: hoverAppliedColor,
-          },
-        }}
-      >
-        Add New Player
-      </Button>
+      />
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -106,8 +90,8 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
         fullWidth
         PaperProps={{
           sx: {
-            borderRadius: "16px",
-            padding: "16px",
+            borderRadius: "1rem",
+            padding: "1rem",
           },
         }}
       >
@@ -129,50 +113,40 @@ const AddNewPlayer: React.FC<AddNewPlayerProps> = ({
           >
             <TextField
               fullWidth
-              label="Player Name"
+              label="enter player name"
               variant="outlined"
               value={name}
               onChange={(e) => setName(e.target.value)}
               error={!!error}
               helperText={error}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "4rem",
+                  "&.Mui-focused fieldset": {
+                    borderColor: colorPrimary,
+                  },
+                  "&.Mui-error fieldset": {
+                    borderColor: colorError,
+                  },
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  "&.Mui-focused": {
+                    color: colorError,
+                  },
+                },
+              }}
             />
           </DialogContentText>
         </DialogContent>
         <DialogActions
           sx={{
-            justifyContent: "space-between",
-            padding: "8px 1.5rem",
+            padding: "1.5rem",
           }}
         >
-          <Button
-            onClick={handleClose}
-            sx={{
-              color: hoverAppliedColor,
-              fontWeight: "bold",
-              "&:hover": {
-                color: appliedColor,
-              },
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            autoFocus
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            sx={{
-              padding: "8px 16px",
-              fontWeight: "bold",
-              backgroundColor: appliedColor,
-              color: "#fff",
-              "&:hover": {
-                backgroundColor: hoverAppliedColor,
-              },
-            }}
-          >
-            Create Player
-          </Button>
+          <AppButton onClick={handleClose} text="Cancel" isOutlined />
+          <AppButton onClick={handleSubmit} text="Create Player" />
         </DialogActions>
       </Dialog>
     </Box>
