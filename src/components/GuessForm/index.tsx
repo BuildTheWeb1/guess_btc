@@ -4,6 +4,7 @@ import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp
 import { Box, Fab, IconButton } from "@mui/material";
 import { useCallback, useState } from "react";
 import { GuessType, PlayerType } from "../../types";
+import { colorPrimary } from "../../utils";
 import AlertSnack from "../AlertSnack";
 
 interface GuessFormProps {
@@ -37,39 +38,43 @@ const GuessForm: React.FC<GuessFormProps> = ({ player, onSubmitGuess }) => {
   return (
     <form onSubmit={handleSubmit}>
       <AlertSnack open={showAlert} handleClose={setShowAlert} />
-      <Box>
-        <IconButton
-          aria-label="price going up"
-          color="secondary"
-          onClick={() => handleIconClick(GuessType.UP)}
-        >
-          <KeyboardDoubleArrowUpIcon fontSize="large" />
-        </IconButton>
+      <Box display="flex" flexDirection="column" maxWidth={200}>
+        <Box textAlign="center" mb={2}>
+          <IconButton
+            aria-label="price going up"
+            onClick={() => handleIconClick(GuessType.UP)}
+            color="inherit"
+          >
+            <KeyboardDoubleArrowUpIcon sx={{ fontSize: 50 }} />
+          </IconButton>
 
-        <IconButton
-          aria-label="price going down"
-          color="secondary"
-          onClick={() => handleIconClick(GuessType.DOWN)}
+          <IconButton
+            aria-label="price going down"
+            onClick={() => handleIconClick(GuessType.DOWN)}
+            color="inherit"
+          >
+            <KeyboardDoubleArrowDownIcon sx={{ fontSize: 50 }} />
+          </IconButton>
+        </Box>
+
+        <Fab
+          variant="extended"
+          type="submit"
+          disabled={!guess || !player}
+          sx={{
+            backgroundColor: colorPrimary,
+            color: "#000",
+            borderRadius: "3rem",
+            padding: ".75rem 1.5rem",
+            "&:hover": {
+              backgroundColor: "#44E044",
+            },
+          }}
         >
-          <KeyboardDoubleArrowDownIcon fontSize="large" />
-        </IconButton>
+          Submit Guess
+          <KeyboardDoubleArrowRightIcon />
+        </Fab>
       </Box>
-
-      <Fab
-        variant="extended"
-        color="secondary"
-        type="submit"
-        disabled={!guess || !player}
-        sx={{
-          fontWeight: "bold",
-          borderRadius: "8px",
-          padding: "10px 20px",
-          fontSize: "1rem",
-        }}
-      >
-        Submit Guess
-        <KeyboardDoubleArrowRightIcon />
-      </Fab>
     </form>
   );
 };

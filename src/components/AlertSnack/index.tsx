@@ -26,7 +26,19 @@ const AlertSnack: React.FC<AlertSnackProps> = ({ open, handleClose }) => {
       onClose={handleCloseAlert}
       anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
     >
-      <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
+      <Alert
+        severity="warning"
+        variant="filled"
+        sx={{
+          width: "100%",
+          fontSize: "1.25rem",
+          "& .MuiAlert-icon": {
+            fontSize: "2rem",
+          },
+          padding: "1rem",
+          borderRadius: "1.5rem",
+        }}
+      >
         Please select a player before making a guess!
       </Alert>
     </Snackbar>

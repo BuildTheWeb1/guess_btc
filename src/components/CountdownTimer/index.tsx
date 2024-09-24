@@ -1,5 +1,6 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { colorError } from "../../utils";
 
 interface CountdownTimerProps {
   milliseconds: number;
@@ -25,7 +26,16 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ milliseconds }) => {
           ? `Please wait at least ${timeLeft} seconds...`
           : "Waiting for BTC price to update"}
       </Typography>
-      <LinearProgress color="secondary" />
+      <LinearProgress
+        sx={{
+          height: 10,
+          borderRadius: 5,
+          backgroundColor: "#e0e0e0",
+          "& .MuiLinearProgress-bar": {
+            backgroundColor: timeLeft > 5 ? "#4caf50" : colorError,
+          },
+        }}
+      />
     </Box>
   );
 };
