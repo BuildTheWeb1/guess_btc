@@ -122,6 +122,8 @@ function App() {
   const handlePlayerSelect = useCallback((player: PlayerType) => {
     setCurrentPlayer(player);
     setScore(player.score);
+    setGuess(null);
+    setGuessResult(null);
   }, []);
 
   const handleNewPlayerCreate = useCallback(
