@@ -4,8 +4,6 @@ This is a React-based application that allows users to guess whether the price o
 
 CoinGecko’s public free API caches the data and refreshes once every 5 minutes.
 
-Demo: https://master.d2q6c76wbtogmw.amplifyapp.com/
-
 ## Features
 
 - User Selection: Users can select an existing player from the dropdown or create a new player.
