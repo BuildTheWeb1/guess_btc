@@ -3,21 +3,25 @@ import { useEffect, useState } from "react";
 import { colorError } from "../../utils";
 
 interface CountdownTimerProps {
-  milliseconds: number;
+  startTime: number;
+  duration: number;
 }
 
-const CountdownTimer: React.FC<CountdownTimerProps> = ({ milliseconds }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(milliseconds / 1000);
+const CountdownTimer: React.FC<CountdownTimerProps> = ({ startTime, duration }) => {
+  const [timeLeft, setTimeLeft] = useState<number>(
+    Math.max(0, Math.floor((startTime + duration - Date.now()) / 1000))
+  );
 
   useEffect(() => {
     if (timeLeft === 0) return;
 
     const timerId = setInterval(() => {
-      setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+      const newTimeLeft = Math.max(0, Math.floor((startTime + duration - Date.now()) / 1000));
+      setTimeLeft(newTimeLeft);
     }, 1000);
 
     return () => clearInterval(timerId);
-  }, [timeLeft]);
+  }, [timeLeft, startTime, duration]);
 
   return (
     <Box>
@@ -35,6 +39,8 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ milliseconds }) => {
             backgroundColor: timeLeft > 5 ? "#4caf50" : colorError,
           },
         }}
+        variant="determinate"
+        value={Math.max(0, (timeLeft / (duration / 1000)) * 100)}
       />
     </Box>
   );
