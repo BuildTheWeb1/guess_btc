@@ -14,7 +14,7 @@ const AppFooter = () => {
       }}
     >
       <Typography variant="body2" color="textSecondary">
-        © {currentYear} Claudiu C
+        © {currentYear} Claudiu C.
       </Typography>
     </Box>
   );

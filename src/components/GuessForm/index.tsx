@@ -1,5 +1,5 @@
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import ThumbUpRoundedIcon from '@mui/icons-material/ThumbUpRounded';
+import ThumbDownRoundedIcon from '@mui/icons-material/ThumbDownRounded';
 import { Box, Fab, IconButton } from "@mui/material";
 import { useCallback, useState } from "react";
 import { GuessType } from "../../types";
@@ -28,13 +28,13 @@ const GuessForm: React.FC<GuessFormProps> = ({ onSubmit, disabled }) => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<Box display="flex" flexDirection="column" maxWidth={200}>
-				<Box textAlign="center" mb={2}>
+				<Box display="flex" justifyContent='space-evenly' mb={2}>
 					<IconButton
 						aria-label="price going up"
 						onClick={() => handleIconClick(GuessType.UP)}
 						color="inherit"
 					>
-						<KeyboardDoubleArrowUpIcon sx={{ fontSize: 50 }} />
+						<ThumbUpRoundedIcon sx={{ fontSize: 40 }} />
 					</IconButton>
 
 					<IconButton
@@ -42,7 +42,7 @@ const GuessForm: React.FC<GuessFormProps> = ({ onSubmit, disabled }) => {
 						onClick={() => handleIconClick(GuessType.DOWN)}
 						color="inherit"
 					>
-						<KeyboardDoubleArrowDownIcon sx={{ fontSize: 50 }} />
+						<ThumbDownRoundedIcon sx={{ fontSize: 40 }} />
 					</IconButton>
 				</Box>
 
