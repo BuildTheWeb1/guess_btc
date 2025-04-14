@@ -3,14 +3,14 @@ import { CharacterHappy, CharacterNormal, CharacterSad } from "../../assets";
 import { GuessResultType } from "../../types";
 
 interface CharacterProps {
-  guessResult: GuessResultType | null;
+  result: GuessResultType | null;
 }
 
-const Character: React.FC<CharacterProps> = ({ guessResult }) => {
+const Character: React.FC<CharacterProps> = ({ result }) => {
   const baseStyles = useMemo(() => ({ width: "20rem", height: "20rem" }), []);
 
   const handleCharacterState = useCallback(() => {
-    switch (guessResult) {
+    switch (result) {
       case GuessResultType.CORRECT:
         return (
           <img
@@ -37,7 +37,7 @@ const Character: React.FC<CharacterProps> = ({ guessResult }) => {
           />
         );
     }
-  }, [baseStyles, guessResult]);
+  }, [baseStyles, result]);
 
   return handleCharacterState();
 };

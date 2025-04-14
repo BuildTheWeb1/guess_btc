@@ -1,14 +1,19 @@
-// src/api.ts
+// src/api/index.ts
 export interface BtcPriceResponse {
   bitcoin: {
     usd: number;
   };
 }
 
+const API_BASE_URL = "http://localhost:5001/api";
+
 export const fetchBTCPrice = async (): Promise<number> => {
-  const response = await fetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
-  );
-  const data: BtcPriceResponse = await response.json();
-  return data.bitcoin.usd;
+  try {
+    const response = await fetch(`${API_BASE_URL}/btc-price`);
+    const data: BtcPriceResponse = await response.json();
+    return data.bitcoin.usd;
+  } catch (error) {
+    console.error("Error fetching BTC price:", error);
+    throw error;
+  }
 };

@@ -1,76 +1,101 @@
 # BTC - Guess The Price
 
-This is a React-based application that allows users to guess whether the price of Bitcoin (BTC) will go up or down. Players can select a user, make a guess, and see their score change based on the result of their guess. The app integrates with AWS Amplify, AppSync, and DynamoDB to store and manage player data and their scores.
+This is a React-based application that allows users to guess whether the price of Bitcoin (BTC) will go up or down. The app tracks the user's score locally and provides visual feedback based on the correctness of their guesses.
 
-CoinGecko’s public free API caches the data and refreshes once every 5 minutes.
+CoinGecko's public API is used to fetch Bitcoin price data, which is proxied through a Node.js Express server.
 
 ## Features
 
-- User Selection: Users can select an existing player from the dropdown or create a new player.
-- Real-time BTC Price: The current Bitcoin price is fetched every 25 seconds from a mock API.
-- Guessing System: Players can guess whether the price will go up or down. If the player guesses correctly, their score increases; if they guess wrong, their score decreases.
-- Persistent State: The player's state (current player and score) is persisted in localStorage so that it remains intact even after page reloads.
-- AWS Integration: The app uses AWS Amplify and AppSync to manage the player data stored in DynamoDB. Scores are updated in real-time after each guess.
+- Real-time BTC Price: The current Bitcoin price is fetched every 25 seconds from the CoinGecko API.
+- Guessing System: Players can guess whether the price will go up or down. If the guess is correct, the score increases; if wrong, the score decreases.
+- Visual Feedback: A character animation changes based on the result of the guess (happy for correct, sad for incorrect).
+- Persistent Score: The player's score is saved in localStorage so that it remains intact even after page reloads.
+- Responsive Design: The app is fully responsive and works on both desktop and mobile devices.
 
-### Prerequisites
+## Architecture
+
+The application consists of two main parts:
+
+1. **Frontend**: A React application built with TypeScript and Material UI
+2. **Backend**: A simple Express server that proxies requests to the CoinGecko API
+
+## Prerequisites
 
 To get started with the app, ensure you have the following installed:
 
 - Node.js (version 14 or higher)
-- AWS Amplify CLI configured and linked to your AWS account.
+- npm (usually comes with Node.js)
 
-## Installing
+## Installation and Setup
 
-After installing the pre-requisites and cloning the repo, install the dependencies by running:
+After cloning the repository, follow these steps:
 
-```
+1. Install dependencies for both the frontend and backend:
+
+```bash
+# Install frontend dependencies
 npm install
+
+# Install backend dependencies
+cd server
+npm install
+cd ..
 ```
 
-Configure AWS Amplify
+2. Start the backend server:
 
-```
-amplify init
-```
-
-Setup AWS Services
-
-```
-amplify push
+```bash
+cd server
+npm run dev
 ```
 
-Run the development server
+3. In a new terminal, start the frontend application:
 
-```
+```bash
 npm start
 ```
 
-### How the App Works
+The application should now be running at http://localhost:3000, with the backend server running at http://localhost:5001.
 
-Player Selection:
+## How the App Works
 
-- A user can select an existing player from the dropdown or create a new player.
-- Player data (ID, name, and score) is stored in DynamoDB.
+### Guessing the Price:
 
-Guessing the Price:
+1. The app fetches the current BTC price every 25 seconds from the CoinGecko API via the backend server.
+2. Users can make a guess if the BTC price will go up or down by clicking the up or down arrow and submitting their guess.
+3. After submitting a guess, a 60-second timer starts, during which the app waits for the price to change.
+4. Once the price changes or the timer expires, the app evaluates the guess:
+   - If the guess is correct (price moved in the predicted direction), the score increases by 1
+   - If the guess is incorrect, the score decreases by 1
 
-- The app fetches the current BTC price every 25 seconds. (Results are available once every couple of minutes).
-- Users can make a guess if the BTC price will go up or down. If the player guesses correctly, their score increases by 1; otherwise, it decreases by 1.
+### Score Tracking:
 
-Score Tracking:
+- The user's score is tracked in the application state and saved to localStorage.
+- The score persists between sessions, so users can continue where they left off.
 
-- After each guess, the user's score is updated and saved to the DynamoDB table.
+### Visual Feedback:
 
-Persistence:
-
-- The selected player and score are stored in localStorage, so even after refreshing the page, the player's session is maintained.
+- A character animation provides visual feedback based on the result of the guess:
+  - Neutral expression when no guess has been made
+  - Happy expression for correct guesses
+  - Sad expression for incorrect guesses
 
 ## Technologies Used
 
-- React: Frontend framework for building the user interface.
-- Material UI (MUI): For UI components and design.
-- AWS Amplify: For managing the backend services like AppSync and DynamoDB.
-- GraphQL: For querying and mutating data in DynamoDB.
+- **Frontend**:
+  - React: Frontend framework for building the user interface
+  - TypeScript: For type safety and better developer experience
+  - Material UI (MUI): For UI components and design
+  - localStorage: For persisting user score
+
+- **Backend**:
+  - Node.js: JavaScript runtime for the server
+  - Express: Web framework for the backend server
+  - Axios: For making HTTP requests to the CoinGecko API
+
+## API Integration
+
+The app uses the CoinGecko API to fetch Bitcoin price data. To avoid CORS issues and rate limiting, all requests to the CoinGecko API are proxied through the backend server.
 
 ## Contributing
 

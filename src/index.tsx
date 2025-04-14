@@ -1,20 +1,8 @@
-import { Amplify } from "aws-amplify";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-
-Amplify.configure({
-  API: {
-    GraphQL: {
-      endpoint: process.env.REACT_APP_API_ENDPOINT || "",
-      region: "eu-central-1",
-      defaultAuthMode: "apiKey",
-      apiKey: process.env.REACT_APP_API_KEY || "",
-    },
-  },
-});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
