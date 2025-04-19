@@ -23,6 +23,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({ result }) => {
 			};
 		}
 
+		if (result === GuessResultType.UNCHANGED) {
+			return {
+				message: "Price didn't change! No score change.",
+				alertType: "info" as const,
+			};
+		}
+
 		return null;
 	}, [result]);
 
@@ -40,7 +47,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({ result }) => {
 					fontSize="1.5rem"
 					fontWeight="bold"
 					color={
-						resultFeedback.alertType === "success" ? colorPrimary : colorError
+						resultFeedback.alertType === "success" 
+							? colorPrimary 
+							: resultFeedback.alertType === "error"
+								? colorError
+								: "#2196F3" // Blue color for info
 					}
 				>
 					{resultFeedback.message}

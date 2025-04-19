@@ -7,6 +7,7 @@ export enum GuessType {
 export enum GuessResultType {
   CORRECT = "correct",
   INCORRECT = "incorrect",
+  UNCHANGED = "unchanged",
 }
 
 export interface PlayerType {
