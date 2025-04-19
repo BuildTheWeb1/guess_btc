@@ -1,6 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
+import path from 'node:path';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -29,6 +30,18 @@ app.get('/api/btc-price', async (req, res) => {
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+
+// In production, the server might be handling static files too
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React app build directory
+  const staticPath = path.join(__dirname, '../../build');
+  app.use(express.static(staticPath));
+
+  // Handle any requests that don't match the ones above
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(staticPath, 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

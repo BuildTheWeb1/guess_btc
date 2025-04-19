@@ -4,9 +4,15 @@ export interface BtcPriceResponse {
 	};
 }
 
-// Use environment variable for API URL in production, fallback to localhost for development
-const API_BASE_URL =
-	process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+// Determine API base URL based on environment
+const API_BASE_URL = (() => {
+	// In production on Vercel, API routes are served from the same domain
+	if (process.env.NODE_ENV === 'production') {
+		return '/api';
+	}
+	// For local development
+	return process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+})();
 
 export const fetchBTCPrice = async (): Promise<number> => {
 	try {
